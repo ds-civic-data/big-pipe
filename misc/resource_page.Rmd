@@ -1,0 +1,22 @@
+---
+title: "project resources"
+output: html_document
+---
+
+morrison bridge usgs monitor
+
+https://or.water.usgs.gov/will_morrison/monitors/
+
+usgs water data for oregon
+
+https://waterdata.usgs.gov/or/nwis/
+
+for requesting water quality data from environmental services
+
+https://www.portlandoregon.gov/bes/article/221343
+
+interesting information about e coli sampling and regulations
+
+https://www.portlandoregon.gov/bes/article/390127
+
+
