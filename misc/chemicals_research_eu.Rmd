@@ -4,8 +4,18 @@ author: "Richard Pham"
 date: "April 5, 2018"
 output: github_document
 ---
+
+Please refer to link : `Parameters.doc` 
+
 Below is an overview of what makes water quality, by European water standards, standards 
 that we should at least look at, if not adhere to : 
+
+*please note : the word usage is synonymous with origin in some cases*
+
+
+*please note : for any variables below we will use to measure water quality, we should be sure to first look at average or safe concentrations, detailed at the end of each variable's description in the referred link* 
+
+*please note : if link does not show any I/PV value for any interesting variables, we should not factor it into water quality* 
 
 __Aluminum__ : negative  
 
@@ -138,3 +148,134 @@ __Chromium__ : negative
 
 - personal comment : be cautious when using this as a measure, be sure 
                      that chromium form fits relative levels
+
+
+__Clostridium_Perfringens__ : negative 
+
+- effects : a fungus, some species are pathogenic, but health issues might be related to toxins released by fungus instead of fungus itself. 
+
+- usage : human and animal wastes and/or soil 
+
+- personal comment : spores can survive in water longer on average than 
+                     other fungi, resistant to disinfection
+
+
+__Coliforms__ : indicator 
+
+- effects : increases the likelihood of pathogens 
+- usage : present in human/animal waste 
+
+__Color__ : indicator 
+
+- effects : indicates the type of biology present in water
+            more for aesthetic purposes 
+
+__Copper__ : indicator 
+
+- effects : not particularly toxic to human beings, but may reduce 
+            quality of taste in high concentrations  
+- usage : ores and industrial wastes 
+
+__Cryptosporidium__ : negative 
+
+- effects : parasite with pathogenic effects on human beings, weakens 
+            immune systems 
+
+- usage : present in human and animal wastes 
+
+__Cyanide__ : 
+
+- effects : extremely toxic,, in excessive amounts 
+
+- usage : indistrial effluents 
+
+__Enterococci__ : 
+
+- effects : some members of this group have pathogenic properties 
+
+- usage : sewage and wastes 
+
+
+-----------------------------------------------
+From here on, only the names and effects of particularly interesting 
+variables will be displayed (typing is a waste) : 
+
+
+__Fluoride__ : negative (in high conc.)  
+high concentrations lead to rotting of teeth 
+
+__Heavy_Metals__ : negative 
+includes such as : 
+antimony, cobalt, nickel (refer to pg. 59, #37) 
+
+- effects : toxic to humans  
+
+
+__Hydrocarbons__ : depends 
+
+__Lead__ : negative 
+
+- effects : toxic, cumulative poisoning 
+
+__Mercury__ : negative 
+
+- effects : extremely negatively effective 
+
+__Nickel__ : ambiguous 
+
+- effects : toxic to fish, questionable for human beings 
+
+__Nitrate__ : negative (to infants) 
+
+
+__Nitrogen__ : indicator  
+
+- effects : indicates purity of water 
+
+__Oxidisability__ : indicator 
+
+- effects : indicates purity of water 
+
+__Oxygen_Demand_Biochemical__ : indicator 
+
+- effects : indicates purity of water 
+
+__Oxygen_dissolved__ : indicator 
+
+- effects : indicates purity of water 
+
+
+__Pesticides__ : negative 
+
+__ pH__ : indicator 
+
+- effects : value indicates acidicity/alkalinity, with organoeleptic consequence 
+
+__Phosphorus__ : indicator 
+
+- effects : indicates overall water quality 
+
+__Pseudomonas_Aueruginosa__ : negative 
+
+- effects : any existing concentration increases eye/ear infections 
+
+__Salmonella__ : negative 
+
+- effects : for instance, typhoid fever
+
+
+__Selenium__ : negative 
+
+- effects : toxic element except in trace conc. 
+
+__Silicon__ : negative 
+
+__Sodium__ : negative (in excess) 
+
+- effects : hypertension 
+
+
+
+
+
+
