@@ -10,12 +10,12 @@ Please refer to link : `Parameters.doc`
 Below is an overview of what makes water quality, by European water standards, standards 
 that we should at least look at, if not adhere to : 
 
-*please note : the word usage is synonymous with origin in some cases*
+*please note : the word "usage"" is synonymous with "origin" in some cases*
 
 
 *please note : for any variables below we will use to measure water quality, we should be sure to first look at average or safe concentrations, detailed at the end of each variable's description in the referred link* 
 
-*please note : if link does not show any I/PV value for any interesting variables, we should not factor it into water quality* 
+*please note : if link does not show any I/PV value for any particular variable, we should not factor it into water quality* 
 
 __Aluminum__ : negative  
 
