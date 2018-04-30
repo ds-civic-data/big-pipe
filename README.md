@@ -1,4 +1,4 @@
-Project Description: How has the water quality of the Willamette River (and tributaries) changed before and after the Big Pipe Project?
+Project Description: How does the sentiment vary between news outlets portraying the same events?  
 
 Authors: Henry Knopf, Richard Pham, Emerson Webb
 
