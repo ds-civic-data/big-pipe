@@ -1,0 +1,76 @@
+---
+title: "nyt"
+author: "Knopf, Henry"
+date: "5/1/2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(RJSONIO)
+library (RCurl)
+library(lubridate)
+library(tidyverse)
+```
+
+
+```{r}
+### set parameters ###
+api <- "38fb121cafaf4e3a932f71087d3bcbab" #<<<<<<<<<<<<<===== API key goes here
+q <- "trump" # Query string, use + instead of space
+records <- 3 #how many results do we want? (Note limitations)
+pageRange <- 0:(records/10-1)
+dat <- c()
+
+
+```
+
+```{r}
+for (i in pageRange) {
+   # concatenate URL for each page
+   uri <- paste0("http://api.nytimes.com/svc/search/v2/articlesearch.json?q=", q, "&page=", i, "&fl=pub_date&api-key=", api)
+   d <- getURL(uri)
+   res <- fromJSON(d,simplify = FALSE)
+   dat <- append(dat, unlist(res$response$docs))  # convert the dates to a vector and append
+ }
+
+
+```
+
+```{r}
+# establish date range
+dat.conv <- strptime(dat, format="%Y-%m-%d")
+# need to convert dat into POSIX format
+daterange <- c(min(dat.conv), max(dat.conv))
+dat.all <- seq(from = daterange[1], to = daterange[2], by="day") # all possible days
+
+
+```
+
+```{r}
+# aggregate counts for dates and coerce into a data frame
+cts <- as.data.frame(table(dat))
+```
+
+```{r}
+# compare dates from counts dataframe with the whole data range
+# assign 0 where there is no count, otherwise take count
+# (take out PSD at the end to make it comparable)
+dat.all <- strptime(dat.all, format="%Y-%m-%d")
+# can't seem to be able to compare Posix objects with %in%, so coerce them to character for this:
+freqs <- ifelse(as.character(dat.all) %in% as.character(strptime(cts$dat, format="%Y-%m-%d")), cts$Freq, 0)
+
+
+```
+
+```{r}
+plot (freqs, type="l", xaxt="n", main=paste("Search term(s):",q), ylab="# of articles", xlab="date")
+axis(1, 1:length(freqs), dat.all)
+lines(lowess(freqs, f=.2), col = 2)
+
+```
