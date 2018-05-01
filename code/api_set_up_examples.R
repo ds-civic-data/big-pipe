@@ -3,13 +3,13 @@ library(jsonlite)
 library(xml2)
 library(rvest)
 
-NEWSAPI_KEY <- #your newsapi key goes here
+NEWSAPI_KEY <- 
 
 src <- get_sources(language = "en")
 
 guardian_uk_id <- src$id[47]
 
-get_ex <- GET("https://newsapi.org/v2/everything?sources=the-guardian-uk&apiKey=dd82267324ef47b0aa8e7062eb1b5108")
+
 
 endpoint <- "/v2/everything"
 #the-economist
@@ -49,6 +49,60 @@ get_politico_html_text <- function(i, url_list){
   article_url <- url_list[["articles"]][[i]][["url"]]
   text <- read_html(article_url) %>% 
     html_node(".story-text") %>%
+    html_text()
+  publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
+  c(text, publish.date)
+}
+
+get_breitbart_html_text <- function(i, url_list){
+  article_url <- url_list[["articles"]][[i]][["url"]]
+  text <- read_html(article_url) %>% 
+    html_node(".entry-content") %>%
+    html_text()
+  publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
+  c(text, publish.date)
+}
+
+get_foxnews_html_text <- function(i, url_list){
+  article_url <- url_list[["articles"]][[i]][["url"]]
+  text <- read_html(article_url) %>% 
+    html_node(".article-body") %>%
+    html_text()
+  publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
+  c(text, publish.date)
+}
+
+get_natreview_html_text <- function(i, url_list){
+  article_url <- url_list[["articles"]][[i]][["url"]]
+  text <- read_html(article_url) %>% 
+    html_node(".article-content") %>%
+    html_text()
+  publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
+  c(text, publish.date)
+}
+
+get_thehill_html_text <- function(i, url_list){
+  article_url <- url_list[["articles"]][[i]][["url"]]
+  text <- read_html(article_url) %>% 
+    html_node(".even") %>%
+    html_text()
+  publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
+  c(text, publish.date)
+}
+
+get_bbcnews_html_text <- function(i, url_list){
+  article_url <- url_list[["articles"]][[i]][["url"]]
+  text <- read_html(article_url) %>% 
+    html_node(".story-body__inner") %>%
+    html_text()
+  publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
+  c(text, publish.date)
+}
+
+get_amconvs_html_text <- function(i, url_list){
+  article_url <- url_list[["articles"]][[i]][["url"]]
+  text <- read_html(article_url) %>% 
+    html_node("#article-inner") %>%
     html_text()
   publish.date <- url_list[["articles"]][[i]][["publishedAt"]]
   c(text, publish.date)
