@@ -39,6 +39,11 @@ html_text_extract <- function(i, url.list, html.sel.df){
   url.list[[i]]
 }
 
+index_na_entries <- function(i, text.list){
+  if(anyNA(text.list[[i]]) == TRUE){
+    i 
+  }
+}
 
 text_extractor <- function(url.list){
   news_id <- c("the-guardian-au", "the-guardian-uk", "politco", 
@@ -53,8 +58,11 @@ text_extractor <- function(url.list){
   
   html.sel.df <- data.frame(news_id, html_sel)
   
-  lapply(1:length(url.list), html_text_extract, 
+  text.list <- lapply(1:length(url.list), html_text_extract, 
          url.list = url.list, html.sel.df = html.sel.df)
+  na_vec <- unlist(lapply(1:length(text.list), index_na_entries, text.list = text.list))
+  text.list <- text.list[-na_vec]
+  text.list
 }
 
 test.text <- text_extractor(test.news.url3)
