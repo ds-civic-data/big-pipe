@@ -27,7 +27,7 @@ html_sel <- c(".js-article__body",  ".js-article__body", ".story-text", ".entry-
 
 html.sel.df <- data.frame(news_id, html_sel)
 
-html_text_extract <- function(i, url.list){
+html_text_extract <- function(i, url.list, html.sel.df){
   source_id <- url.list[[i]][2]
   index <- which(html.sel.df$news_id == source_id)
   source_html_code <- as.character(html.sel.df$html_sel[index])
@@ -53,7 +53,8 @@ text_extractor <- function(url.list){
   
   html.sel.df <- data.frame(news_id, html_sel)
   
-  lapply(1:length(url.list), html_text_extract, url.list = url.list)
+  lapply(1:length(url.list), html_text_extract, 
+         url.list = url.list, html.sel.df = html.sel.df)
 }
 
-#test.text <- text_extractor(test.news.url3)
+test.text <- text_extractor(test.news.url3)
