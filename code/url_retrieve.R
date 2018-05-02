@@ -48,10 +48,9 @@ extract_metadata <- function(i, content.list){
 #test.news.url <- get_newsapi_url(q = "Trump", sources = "the-guardian-uk, bbc-news", 
 #                apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
 
-test.news.url2 <- get_newsapi_url(q = "", sources = "the-guardian-uk, bbc-news", 
-                                                 apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
+#test.news.url2 <- get_newsapi_url(q = "", sources = "the-guardian-uk, bbc-news", 
+#                                                 apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
 
-query_test2 <- list(q = "", sources = "the-guardian-uk, bbc-news", apiKey = NEWSAPI_KEY)
-get_test <- GET(url = "https://newsapi.org", path = "/v2/everything", query = query_test2)
-content_test <- content(get_test)
+test.news.url3 <- get_newsapi_url(q= "Cheese", sources = "the-guardian-uk, bbc-news", 
+                                               apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
 
