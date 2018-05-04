@@ -11,6 +11,8 @@ library(rvest)
 #other options are "popularity" and "relevancy", and pageSize which is default 20 and must be a non-zero 
 #integer with a maximum value of 100.
 
+NEWSAPI_KEY <- "no key needed!"
+  
 get_newsapi_url <- function(url = "https://newsapi.org", q = "", 
                             path, sortBy = "publishedAt", sources, apiKey, pageSize = 20){
   query.init <- list(q = q, sources = sources,
