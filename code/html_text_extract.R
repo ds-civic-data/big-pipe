@@ -32,9 +32,14 @@ html_text_extract <- function(i, url.list, html.sel.df){
   index <- which(html.sel.df$news_id == source_id)
   source_html_code <- as.character(html.sel.df$html_sel[index])
   source_url <- url.list[[i]][4]
-  text <- read_html(source_url) %>% 
+  text <- tryCatch(
+  read_html(source_url) %>% 
     html_node(source_html_code) %>%
-    html_text()
+    html_text(),
+  error = function(cond) {
+    return(NA)
+  }
+  )
   url.list[[i]][5] <- text
   url.list[[i]]
 }
@@ -46,7 +51,7 @@ index_na_entries <- function(i, text.list){
 }
 
 text_extractor <- function(url.list){
-  news_id <- c("the-guardian-au", "the-guardian-uk", "politco", 
+  news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
                "breitbart-news",  "fox-news", "national-review",
                "the-hill",  "bbc-news",  "the-american-conservative", "the-huffington-post", 
                "usa-today", "buzzfeed", "cnn", "al-jazeera-english", "cbs-news", "abc-news") 
@@ -65,4 +70,6 @@ text_extractor <- function(url.list){
   text.list
 }
 
+test.news.url3 <- get_newsapi_url(q= "Apples", sources = "the-guardian-uk, bbc-news, politico, cbs-news, cnn", 
+                                  apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
 test.text <- text_extractor(test.news.url3)
