@@ -1,46 +1,52 @@
 library(shiny)
+library(tidyverse)
+source("shinyhelper.R")
 ui <- fluidPage(
                
   mainPanel(
     plotOutput("timeseries"),
     tableOutput("sentiment"),
+    plotOutput("news_comp")
           ),
   
  sidebarLayout( 
    sidebarPanel(
-    selectInput(inputId = 'sources', label = 'News Sources'),
+    selectInput(inputId = 'sources', label = 'News Sources', multiple = T ),
     htmlOutput("selectUI"),
     textInput(inputId = 'news_search', label = 'Search News',width = "400px"),
     submitButton(text = "Update Page",icon = "refresh")
                )
              )
- 
-    #must have list of news sources, write the code for the timeseries plot connected to the inputID. Similarly, sentiment table output
-  #  below will reactively change based on the dataset. Must code in a reactive for that server-side. 
-  
-  
-  
   
 )
+
 
 server < - function(input, output) {
   
   searchResult<- reactive({
-    subset(news_text, grep(pattern = input$news_search, x = news_text$text, ignore.case = T ))
+    input$news_search
   })
-  output$selectUI <- reactive({ 
-    sources %>%
-      filter(sources %in% input$sources)
+  sources <- reactive({
+    input$sources
+  })
+  data <- reactive({
+   paste( c(input$searchResult, input$sources))
+  })
+    
+  output$news_comp <- renderPlot({
+    data %>%
+      ggplot( aes( x = source, y = sentiment)) + geom_col()
   })
   
-  output$searchResults <- renderTable({ 
-    searchResult[,1]
-  })
   output$timeseries <- renderPlot({
-    timeseries
+    data %>%
+      ggplot( aes( x = date, y = sentiment)) + geom_col() + theme_classic()
   }) 
+
   output$sentiment <- renderTable({
-    sentiment()
+    data %>%
+      group_by(source) %>%
+      summarize(mean = mean(sentiment))
   })
   
 }
