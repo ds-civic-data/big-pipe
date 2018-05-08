@@ -70,6 +70,19 @@ text_extractor <- function(url.list){
   text.list
 }
 
-test.news.url3 <- get_newsapi_url(q= "Apples", sources = "the-guardian-uk, bbc-news, politico, cbs-news, cnn", 
+all.sources <- paste(news_id, collapse = ', ')
+
+
+
+
+test.news.url4 <- get_newsapi_url(sources = all.sources, apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
+
+query.init <- list(q = "", sources = all.sources, apiKey = NEWSAPI_KEY)
+
+urls.init <- GET(url = "https://newsapi.org", path = "/v2/everything", query = query.init)
+
+
+
+test.news.url3 <- get_newsapi_url(q= "Trump", sources = "the-guardian-uk, bbc-news, politico, cbs-news, cnn", 
                                   apiKey = NEWSAPI_KEY, path = "/v2/everything", pageSize = 100)
 test.text <- text_extractor(test.news.url3)
