@@ -24,9 +24,14 @@ html_text_extract <- function(i, url.list, html.sel.df){
   index <- which(html.sel.df$news_id == source_id)
   source_html_code <- as.character(html.sel.df$html_sel[index])
   source_url <- url.list[[i]][4]
-  text <- read_html(source_url) %>% 
-    html_node(source_html_code) %>%
-    html_text()
+  text <- tryCatch(
+    read_html(source_url) %>% 
+      html_node(source_html_code) %>%
+      html_text(),
+    error = function(cond) {
+      return(NA)
+    }
+  )
   url.list[[i]][5] <- text
   url.list[[i]]
 }
@@ -51,6 +56,14 @@ test.news.url4 <- get_newsapi_url(q= "Cheese", sources = "the-guardian-uk, bbc-n
 #  +   randomForest(x, y, ntree=ntree)
 ####
 
+text <- tryCatch(
+  read_html(source_url) %>% 
+    html_node(source_html_code) %>%
+    html_text(),
+  error = function(cond) {
+    return(NA)
+  }
+)
 
 # DESCRIPTION 
 ## implementation of html_extractor code using basic foreach 
@@ -66,9 +79,14 @@ html_extract2 <- function(metadata, newDF) {
     source_html_code <- as.character(newDF$html_sel[index])
     source_url <- metadata[[i]][4]
     
-    text <- read_html(source_url) %>% 
-              html_node(source_html_code) %>%
-              html_text()
+    text <- tryCatch(
+      read_html(source_url) %>% 
+        html_node(source_html_code) %>%
+        tml_text(),
+      error = function(cond) {
+        return(NA)
+      }
+    )
     
     metadata[[i]][5] <- text
     metadata[[i]]
@@ -99,9 +117,14 @@ html_extract3_helper <- function(newsSourceCol, htmlSelector, metadata) {
       source_html_code <- as.character(htmlSelector) 
       source_url <- metadata[[i]][4]
       
-      text <- read_html(source_url) %>% 
-                html_node(source_html_code) %>% 
-                html_text()
+      text <- tryCatch(
+        read_html(source_url) %>% 
+          html_node(source_html_code) %>%
+          html_text(),
+        error = function(cond) {
+          return(NA)
+        }
+      )
     }
   }
 }
