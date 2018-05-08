@@ -6,7 +6,7 @@
 library(foreach)
 library(iterators)
 
-news_id <- c("the-guardian-au", "the-guardian-uk", "politco", 
+news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
              "breitbart-news",  "fox-news", "national-review",
              "the-hill",  "bbc-news",  "the-american-conservative", "the-huffington-post", 
              "usa-today", "buzzfeed", "cnn", "al-jazeera-english", "cbs-news", "abc-news") 
