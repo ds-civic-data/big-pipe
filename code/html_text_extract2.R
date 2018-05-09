@@ -5,6 +5,7 @@
 
 library(foreach)
 library(iterators)
+library(doParallel)
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
              "breitbart-news",  "fox-news", "national-review",
@@ -56,14 +57,6 @@ test.news.url4 <- get_newsapi_url(q= "Cheese", sources = "the-guardian-uk, bbc-n
 #  +   randomForest(x, y, ntree=ntree)
 ####
 
-text <- tryCatch(
-  read_html(source_url) %>% 
-    html_node(source_html_code) %>%
-    html_text(),
-  error = function(cond) {
-    return(NA)
-  }
-)
 
 # DESCRIPTION 
 ## implementation of html_extractor code using basic foreach 
@@ -73,21 +66,17 @@ text <- tryCatch(
 html_extract2 <- function(metadata, newDF) { 
   # add :    .combine = combine 
   start <- Sys.time()
-  text_list <- foreach(i = 1:length(metadata)) %dopar% {
+  text_list <- foreach(i = 1:length(metadata), .errorhandling="remove", 
+                       .packages = c("tidyverse", "httr", "rvest")) %dopar% {
     source_id <- metadata[[i]][2]
     index <- which(newDF$news_id == source_id)
     source_html_code <- as.character(newDF$html_sel[index])
     source_url <- metadata[[i]][4]
     
-    text <- tryCatch(
-      read_html(source_url) %>% 
+    text <- read_html(source_url) %>% 
         html_node(source_html_code) %>%
-        tml_text(),
-      error = function(cond) {
-        return(NA)
-      }
-    )
-    
+        html_text()
+
     metadata[[i]][5] <- text
     metadata[[i]]
   }
