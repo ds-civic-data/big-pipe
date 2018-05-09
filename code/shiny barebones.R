@@ -114,22 +114,17 @@ sidebarLayout(
     submitButton(text = "refresh")
                ),
    mainPanel(
-     #tabsetPanel(
-       #tabPanel("Time-Series Plot", plotOutput("timeseries")),
-       #tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
+     tabsetPanel(
+       tabPanel("Time-Series Plot", plotOutput("timeseries")),
+       tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
        #tabPanel("Sentiments Table", tableOutput("sentiment"))
-     #)
-     plotOutput("timeseries"),
-     plotOutput("news_comp")
+     )
      )
  )
 )
 
 
 server <- function(input, output) {
-  
- 
- 
   
   Inputdata <- reactive ({
     
