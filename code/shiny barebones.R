@@ -1,52 +1,51 @@
 library(shiny)
 library(tidyverse)
-source("shinyhelper.R")
-source("url_retirieve.R")
-source("html_text_extract.R")
+
+searchlist <- c("congress", "police", "metoo")
+news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
+             "breitbart-news",  "fox-news", "national-review",
+             "the-hill",  "bbc-news",  "the-american-conservative", "the-huffington-post", 
+             "usa-today", "buzzfeed", "cnn", "al-jazeera-english", "cbs-news", "abc-news") 
+
+
 ui <- fluidPage(
   titlePanel("News Website Sentiment Analysis"),
    #could change mainpanel to fluidrow() and use columns to make site. Column widths always add up to 12.            
-  mainPanel(
-    plotOutput("timeseries"),
-    tableOutput("sentiment"),
-    plotOutput("news_comp")
-          ),
+sidebarLayout(  
   
- sidebarLayout( 
    sidebarPanel(
-    selectInput(inputId = 'sources', label = 'News Sources', multiple = T ),
+    selectInput(inputId = 'sources', label = 'News Sources', multiple = T, choices = news_id),
     htmlOutput("selectUI"),
-   selectInput(inputId = 'searchterm', label = 'Search Term', multiple = F),
-    submitButton(text = "Update Page",icon = "refresh")
-               )
-             )
-  
+   selectInput(inputId = 'searchterm', label = 'Search Term', multiple = F, choices = searchlist),
+    submitButton(text = "refresh")
+               ),
+   mainPanel(
+     tabsetPanel(
+       tabPanel("Time-Series Plot", plotOutput("timeseries")),
+       tabPanel("Comparison Plot", plotOutput("news_comp")),
+       tabPanel("Sentiments Table", tableOutput("sentiment"))
+     ))
+ )
 )
 
 
-server < - function(input, output) {
+server <- function(input, output) {
   
  
-  sources <- reactive({
-    input$sources
-  })
-  data <- reactive({
-   paste( c(input$searchResult, input$sources))
-  })
+ 
   
-  searchterm <- reactive ({
-    input$searchterm
+  data <- reactive ({
+    data <- proj.text.list[[input$searchterm]] %>%
+      filter(news_source %in% input$sources)
   })
     
   output$news_comp <- renderPlot({
     data %>%
-      filter(sources %in% input$sources, searchterm == input$searchterm) %>%
       ggplot( aes( x = source, y = sentiment)) + geom_col() + coord_flip() + theme_classic()
   })
   
   output$timeseries <- renderPlot({
     data %>%
-      filter(sources %in% input$sources, searchterm == input$searchterm) %>%
       ggplot( aes( x = date, y = sentiment, lty = sources)) + geom_line() + theme_classic()
   }) 
 
