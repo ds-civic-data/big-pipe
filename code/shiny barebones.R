@@ -114,11 +114,14 @@ sidebarLayout(
     submitButton(text = "refresh")
                ),
    mainPanel(
-     tabsetPanel(
-       tabPanel("Time-Series Plot", plotOutput("timeseries")),
-       tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
+     #tabsetPanel(
+       #tabPanel("Time-Series Plot", plotOutput("timeseries")),
+       #tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
        #tabPanel("Sentiments Table", tableOutput("sentiment"))
-     ))
+     #)
+     plotOutput("timeseries"),
+     plotOutput("news_comp")
+     )
  )
 )
 
@@ -128,23 +131,35 @@ server <- function(input, output) {
  
  
   
-  data <- reactive ({
+  Inputdata <- reactive ({
     
-    #corpus_to_sentiments
-    data <- corpus.list[[input$searchterm]] %>%
-      filter(news_source %in% input$sources)
+    corpus_to_sentiments(corpus.list[[input$searchterm]], 
+                         rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
+      clean_sentiment() %>%
+      filter(source_name %in% input$sources) 
+      
   })
     
   output$news_comp <- renderPlot({
-    data %>%
-      ggplot( aes( x = source, y = sentiment)) + geom_col() + coord_flip() + theme_classic()
+    #data.agg <- Inputdata()
+    Inputdata() %>%
+      group_by(NewsSource) %>%
+      summarize(SentimentMeasure = switch(input$sentimentmeasure,
+                                          "mean" = mean(SentimentScore),
+                                          "median" = median(SentimentScore))) %>%
+      ggplot(aes(x = NewsSource, y = SentimentMeasure)) + geom_col() + coord_flip() + theme_classic()
   })
   
   output$timeseries <- renderPlot({
-    data %>%
-      ggplot( aes( x = Date, y = sentiment, lty = sources)) + geom_line() + theme_classic()
+    #data.time <- Inputdata()
+    Inputdata() %>%  
+      group_by(NewsSource, Date) %>% 
+      summarize(SentimentMeasure = switch(input$sentimentmeasure,
+                       "mean" = mean(SentimentScore),
+                       "median" = median(SentimentScore))) %>%
+      ggplot(aes(x = Date, y = SentimentMeasure, Color = NewsSource)) + geom_line() + theme_classic()
   }) 
-
+  
   #output$sentiment <- renderTable({
   #  data %>%
   #    group_by(source) %>%
