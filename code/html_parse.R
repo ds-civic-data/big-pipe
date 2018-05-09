@@ -18,8 +18,7 @@ afinnSentiments <- get_sentiments(lexicon = "afinn")
 split_extracted_data <- function(extracted_data) { 
   html_corpus <- c() # initialize character array 
   for (i in 1:length(extracted_data)) { 
-    x <- extracted_data[[i]] 
-    html_corpus[i] <- extracted_data[[i]][[5]] 
+    html_corpus[i] <- extracted_data[[i]][5] 
     extracted_data[[i]] <- extracted_data[[i]][-5] # delete hefty html data from extracted data 
   } 
   # convert to corpus and remove stop words 
@@ -159,9 +158,28 @@ corpus_to_sentiments <- function(corpus, rubric, scoreType) {
 }
 
 
+#clean_sentiment takes as input the output of corpus_to_sentiments
+#and outputs a tidy dataframe for use in the shinyapp
+clean_sentiment <- function(sentiment.list){
+  nRow <- length(sentiment.list[[2]])
+  tidy.sent.df <- data.frame(matrix(unlist(sentiment.list[[2]]), 
+                    nrow = nRow, byrow = TRUE), stringsAsFactors = FALSE)
+  colnames(tidy.sent.df) <- c("NewsSource", "source_name", "Date", "url")
+  tidy.sent.df <- data.frame(tidy.sent.df, SentimentScore = sentiment.list[[1]])
+  tidy.sent.df %>%
+    mutate(Date = ymd(sub("T.*", "", Date)))
+}
+
+
 # TEST
 ## personal note : y is kinda chunky, due to da code das kinda funky 
-x <- metadata_to_corpus(test.text2)
-y <- corpus_to_sentiments(x, "bing", "negative")
+#x <- metadata_to_corpus(test.text2)
+#y <- corpus_to_sentiments(x, "bing", "negative")
+
+police.corpus.list <- metadata_to_corpus(text_listhenry[[1]])
+police.sentiment.list <- corpus_to_sentiments(police.corpus.list, "bing", "negative")
+police.tidy.df <- clean_sentiment(police.sentiment.list)
+
+
 
 
