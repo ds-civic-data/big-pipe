@@ -5,7 +5,8 @@ library(tidytext)
 library(tm) 
 library(lubridate)
 
-load(file = "shiny_data/shiny.corpus.list.Rdata")
+load(file = "shiny_data/shiny.corpus.list1.Rdata")
+load(file = "shiny_data/shiny.corpus.list2.Rdata")
 searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
