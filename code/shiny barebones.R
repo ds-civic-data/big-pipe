@@ -6,7 +6,7 @@ library(tm)
 library(lubridate)
 
 load(file = "shiny_data/shiny.corpus.list.Rdata")
-searchlist <- c("congress", "police", "metoo")
+searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
              "breitbart-news",  "fox-news", "national-review",
