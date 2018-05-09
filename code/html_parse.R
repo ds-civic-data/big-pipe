@@ -169,13 +169,3 @@ clean_sentiment <- function(sentiment.list){
   tidy.sent.df %>%
     mutate(Date = ymd(sub("T.*", "", Date)))
 }
-
-
-# TEST
-## personal note : y is kinda chunky, due to da code das kinda funky 
-#x <- metadata_to_corpus(test.text2)
-#y <- corpus_to_sentiments(x, "bing", "negative")
-
-police.corpus.list <- metadata_to_corpus(text_listhenry[[1]])
-police.sentiment.list <- corpus_to_sentiments(police.corpus.list, "bing", "negative")
-police.tidy.df <- clean_sentiment(police.sentiment.list)
