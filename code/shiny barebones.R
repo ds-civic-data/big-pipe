@@ -5,6 +5,7 @@ library(tidytext)
 library(tm) 
 library(lubridate)
 
+load(file = "shiny_data/shiny.corpus.list.Rdata")
 searchlist <- c("congress", "police", "metoo")
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
@@ -115,8 +116,8 @@ sidebarLayout(
    mainPanel(
      tabsetPanel(
        tabPanel("Time-Series Plot", plotOutput("timeseries")),
-       tabPanel("Aggregated Bar Plot", plotOutput("news_comp")),
-       tabPanel("Sentiments Table", tableOutput("sentiment"))
+       tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
+       #tabPanel("Sentiments Table", tableOutput("sentiment"))
      ))
  )
 )
@@ -128,7 +129,9 @@ server <- function(input, output) {
  
   
   data <- reactive ({
-    data <- proj.text.list[[input$searchterm]] %>%
+    
+    #corpus_to_sentiments
+    data <- corpus.list[[input$searchterm]] %>%
       filter(news_source %in% input$sources)
   })
     
@@ -142,11 +145,11 @@ server <- function(input, output) {
       ggplot( aes( x = Date, y = sentiment, lty = sources)) + geom_line() + theme_classic()
   }) 
 
-  output$sentiment <- renderTable({
-    data %>%
-      group_by(source) %>%
-      summarize(mean = mean(sentiment), median = median(sentiment), n = n(), max = max(sentiment))
-  })
+  #output$sentiment <- renderTable({
+  #  data %>%
+  #    group_by(source) %>%
+  #    summarize(mean = mean(sentiment), median = median(sentiment), n = n(), max = max(sentiment))
+  #})
   
 }
 
