@@ -7,6 +7,7 @@ library(lubridate)
 
 load(file = "shiny_data/shiny.corpus.list1.Rdata")
 load(file = "shiny_data/shiny.corpus.list2.Rdata")
+corpus.list <- c(corpus.list1, corpus.list2)
 searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
