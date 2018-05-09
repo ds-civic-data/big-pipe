@@ -5,9 +5,12 @@ library(tidytext)
 library(tm) 
 library(lubridate)
 
-load(file = "shiny_data/shiny.corpus.list1.Rdata")
-load(file = "shiny_data/shiny.corpus.list2.Rdata")
+corpus.list1 <- load(file = "shiny_data/shiny.corpus.list1.Rdata")
+corpus.list2 <- load(file = "shiny_data/shiny.corpus.list2.Rdata")
 corpus.list <- c(corpus.list1, corpus.list2)
+#data(mtcars)
+
+
 searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
@@ -99,6 +102,13 @@ clean_sentiment <- function(sentiment.list){
     mutate(Date = ymd(sub("T.*", "", Date)))
 }
 
+##################################################################
+#### CORPUS TO SENTIMENT PIPELINE
+
+
+
+#################################################################
+
 
 ui <- fluidPage(
   titlePanel("News Website Sentiment Analysis"),
@@ -112,6 +122,7 @@ sidebarLayout(
                 multiple = FALSE, choices = sentiment_choices),
     selectInput(inputId = 'scoretype', label = "Score Type", multiple = FALSE, choices = score_choices),
     selectInput(inputId = 'sentimentmeasure', label = "Sentiment Measure", multiple = FALSE, choices = measure_choices),
+    selectInput(inputId = 'cylinder', label = "cyl", multiple = FALSE, choices = unique(as.factor(mtcars$cyl))),
     htmlOutput("selectUI"),
     submitButton(text = "refresh")
                ),
@@ -130,26 +141,56 @@ server <- function(input, output) {
   
   Inputdata <- reactive ({
     
-    corpus_to_sentiments(corpus.list[[input$searchterm]], 
-                         rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
+    #mtcars %>%
+    #  filter(as.factor(cyl) == input$cylinder)
+    #c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
+    
+    #work.list <- switch(input$searchterm, 
+    #                    "congress" = corpus.list[["congress"]],
+    #                    "police" = corpus.list[["police"]],
+    #                    "metoo" = corpus.list[["metoo"]],
+    #                    "trump" = corpus.list[["trump"]],
+    #                    "russia" = corpus.list[["russia"]],
+    #                    "china" = corpus.list[["china"]],
+    #                    "schoolshooting" = corpus.list[["schoolshooting"]])
+    
+    #corpus.list[[input$searchterm]]
+    new.df <- corpus_to_sentiments(corpus.list[input$searchterm], 
+                       rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
       clean_sentiment() %>%
       filter(source_name %in% input$sources) 
+    return(new.df)
       
   })
     
   output$news_comp <- renderPlot({
-    #data.agg <- Inputdata()
-    Inputdata() %>%
-      group_by(NewsSource) %>%
-      summarize(SentimentMeasure = switch(input$sentimentmeasure,
-                                          "mean" = mean(SentimentScore),
-                                          "median" = median(SentimentScore))) %>%
+    data.agg <- Inputdata()
+    #Inputdata() %>%
+      #data.agg <- Inputdata()
+      #data.agg <- corpus_to_sentiments(corpus.list[[input$searchterm]],
+      #                                 rubric = input$sentimentlexicon, scoreType = input$scoretype)
+      #data.agg <- clean_sentiment(data.agg)
+      #data.agg <- filter(data.agg, source_name %in% input$sources)
+      
+      #data.agg %>%
+      #  ggplot(aes(x = mpg, y = hp))+geom_point()
+      
+      data.agg %>%
+        group_by(NewsSource) %>%
+        summarize(SentimentMeasure = switch(input$sentimentmeasure,
+                                            "mean" = mean(SentimentScore),
+                                            "median" = median(SentimentScore))) %>%
       ggplot(aes(x = NewsSource, y = SentimentMeasure)) + geom_col() + coord_flip() + theme_classic()
   })
   
   output$timeseries <- renderPlot({
-    #data.time <- Inputdata()
-    Inputdata() %>%  
+    data.time <- Inputdata()
+    #Inputdata() %>%  
+    #data.time <- corpus_to_sentiments(corpus.list[[input$searchterm]],
+    #                                 rubric = input$sentimentlexicon, scoreType = input$scoretype)
+    #data.time <- clean_sentiment(data.agg)
+    #data.time <- filter(data.agg, source_name %in% input$sources)
+    data.time %>%
       group_by(NewsSource, Date) %>% 
       summarize(SentimentMeasure = switch(input$sentimentmeasure,
                        "mean" = mean(SentimentScore),
