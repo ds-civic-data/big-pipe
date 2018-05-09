@@ -1,0 +1,8 @@
+For reference, 
+
+Richard topic --> index 
+
+1 news.url.israel 
+2 news.url.racism 
+3 news.url.bigmoney
+4 news.url.euro
