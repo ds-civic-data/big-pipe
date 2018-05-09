@@ -53,7 +53,7 @@ remove_extraneous_helper <- function(corpus_content) {
 ## cleaned corpus 
 remove_extraneous <- function(corpuz) {
   # convert to lower-case 
-  corpuz <- tm_map(corpuz, content_transformer(tolower))
+  #corpuz <- tm_map(corpuz, content_transformer(tolower))
   # remove stop-words 
   corpuz <- tm_map(corpuz, removeWords, stopwords("english"))
   # remove extraneous : newline, punc, and (numbas <- ??)  
@@ -138,8 +138,8 @@ get_sentiment_score_by_rubric <- function(i, html_strings, rubric, scoreType) {
 ## corpus 
 metadata_to_corpus <- function(metadata) { 
   q <- split_extracted_data(metadata) 
-  y <- remove_extraneous(q[[1]]) 
-  y 
+  q[[1]] <- remove_extraneous(q[[1]])
+  q
 } 
 
 # DESCRIPTION 
@@ -151,13 +151,17 @@ metadata_to_corpus <- function(metadata) {
 # RETURN 
 ## list of tibbles (see description)
 corpus_to_sentiments <- function(corpus, rubric, scoreType) {
-  x <- content(corpus)
-  scores <- lapply(1:length(y), get_sentiment_score_by_rubric, x, rubric, scoreType)  
-  scores 
+  #x <- content(corpus)
+  x1 <- corpus[[1]]
+  x <- sapply(1:length(x1), function(i, x){x[[i]]["content"]}, x = x1)
+  scores <- unlist(lapply(1:length(x), get_sentiment_score_by_rubric, x, rubric, scoreType)) 
+  list(scores, corpus[[2]])
 }
 
 
 # TEST
 ## personal note : y is kinda chunky, due to da code das kinda funky 
-x <- metadata_to_corpus(test.text)
+x <- metadata_to_corpus(test.text2)
 y <- corpus_to_sentiments(x, "bing", "negative")
+
+
