@@ -179,7 +179,3 @@ clean_sentiment <- function(sentiment.list){
 police.corpus.list <- metadata_to_corpus(text_listhenry[[1]])
 police.sentiment.list <- corpus_to_sentiments(police.corpus.list, "bing", "negative")
 police.tidy.df <- clean_sentiment(police.sentiment.list)
-
-
-
-
