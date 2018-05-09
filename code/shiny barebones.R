@@ -1,8 +1,11 @@
 library(shiny)
 library(tidyverse)
 source("shinyhelper.R")
+source("url_retirieve.R")
+source("html_text_extract.R")
 ui <- fluidPage(
-               
+  titlePanel("News Website Sentiment Analysis"),
+   #could change mainpanel to fluidrow() and use columns to make site. Column widths always add up to 12.            
   mainPanel(
     plotOutput("timeseries"),
     tableOutput("sentiment"),
@@ -13,7 +16,7 @@ ui <- fluidPage(
    sidebarPanel(
     selectInput(inputId = 'sources', label = 'News Sources', multiple = T ),
     htmlOutput("selectUI"),
-    textInput(inputId = 'news_search', label = 'Search News',width = "400px"),
+   selectInput(inputId = 'searchterm', label = 'Search Term', multiple = F),
     submitButton(text = "Update Page",icon = "refresh")
                )
              )
@@ -23,30 +26,34 @@ ui <- fluidPage(
 
 server < - function(input, output) {
   
-  searchResult<- reactive({
-    input$news_search
-  })
+ 
   sources <- reactive({
     input$sources
   })
   data <- reactive({
    paste( c(input$searchResult, input$sources))
   })
+  
+  searchterm <- reactive ({
+    input$searchterm
+  })
     
   output$news_comp <- renderPlot({
     data %>%
-      ggplot( aes( x = source, y = sentiment)) + geom_col()
+      filter(sources %in% input$sources, searchterm == input$searchterm) %>%
+      ggplot( aes( x = source, y = sentiment)) + geom_col() + coord_flip() + theme_classic()
   })
   
   output$timeseries <- renderPlot({
     data %>%
-      ggplot( aes( x = date, y = sentiment)) + geom_col() + theme_classic()
+      filter(sources %in% input$sources, searchterm == input$searchterm) %>%
+      ggplot( aes( x = date, y = sentiment, lty = sources)) + geom_line() + theme_classic()
   }) 
 
   output$sentiment <- renderTable({
     data %>%
       group_by(source) %>%
-      summarize(mean = mean(sentiment))
+      summarize(mean = mean(sentiment), median = median(sentiment), n = n(), max = max(sentiment))
   })
   
 }
