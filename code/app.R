@@ -11,7 +11,7 @@ library(stringr)
 #load(file = "shiny_data/shiny_corpus_list2.Rdata")
 #corpus.list <- c(corpus.list1, corpus.list2)
 
-load(file = "shiny_data/tidy_news_dflist.Rdata")
+#load(file = "shiny_data/tidy_news_dflist.Rdata")
 
 load(file = "shiny_data/shiny_corpus_list1.Rdata")
 load(file = "shiny_data/shiny_corpus_list2.Rdata")
@@ -145,17 +145,25 @@ sidebarLayout(
 server <- function(input, output) {
   
   Inputdata <- reactive ({
-  
+    
+    #df.name <- paste(input$searchterm, input$sentimentlexicon, input$scoretype, sep = ".")
+    
+    df <- tidy.news.dflist[[paste(input$searchterm, input$sentimentlexicon, input$scoretype, sep = ".")]] 
+    
+    #return(df)
+    
     new.df <- corpus_to_sentiments(corpus.list[[input$searchterm]], 
                        rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
-      clean_sentiment() %>%
-      dplyr::filter(source_name %in% input$sources) 
+      clean_sentiment() 
+    #%>%
+    #  dplyr::filter(source_name %in% input$sources) 
     return(new.df)
       
   })
     
   output$news_comp <- renderPlot({
-    data.agg <- Inputdata()
+    data.agg <- Inputdata() %>%
+      dplyr::filter(source_name %in% input$sources)
       
     data.agg %>%
         group_by(NewsSource) %>%
@@ -166,7 +174,8 @@ server <- function(input, output) {
   })
   
   output$timeseries <- renderPlot({
-    data.time <- Inputdata()
+    data.time <- Inputdata() %>%
+      dplyr::filter(source_name %in% input$sources)
     
     data.time %>%
       group_by(NewsSource, Date) %>% 
@@ -179,7 +188,7 @@ server <- function(input, output) {
   output$sentiment <- renderTable({
     Inputdata() %>%
       group_by(NewsSource) %>%
-      summarize(mean = mean(sentiment), median = median(sentiment), n = n()) %>%
+      summarize(n = n()) %>%
       desc()
   })
   
