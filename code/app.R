@@ -11,21 +11,21 @@ library(stringr)
 #load(file = "shiny_data/shiny_corpus_list2.Rdata")
 #corpus.list <- c(corpus.list1, corpus.list2)
 
-#load(file = "shiny_data/tidy_news_dflist.Rdata")
+load(file = "shiny_data/tidy_news_dflist.Rdata")
 
-load(file = "shiny_data/shiny_corpus_list1.Rdata")
-load(file = "shiny_data/shiny_corpus_list2.Rdata")
-load(file = "shiny_data/shiny_corpus_list3.Rdata")
-corpus.list <- c(corpus.list1, corpus.list2, corpus.list3)
+#load(file = "shiny_data/shiny_corpus_list1.Rdata")
+#load(file = "shiny_data/shiny_corpus_list2.Rdata")
+#load(file = "shiny_data/shiny_corpus_list3.Rdata")
+#corpus.list <- c(corpus.list1, corpus.list2, corpus.list3)
 
 
 searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", 
-                "schoolshooting", "israel", "racism", "bigmoney", "euro")
+                "schoolshooting")
 
-news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
+news_id <- c("the-guardian-au", "politico", 
              "breitbart-news",  "fox-news", "national-review",
-             "the-hill",  "bbc-news",  "the-american-conservative", "the-huffington-post", 
-             "usa-today", "buzzfeed", "cnn", "al-jazeera-english", "cbs-news", "abc-news") 
+             "bbc-news",  "the-american-conservative",  
+              "buzzfeed", "al-jazeera-english", "cbs-news", "abc-news") 
 
 sentiment_choices <- c("bing", "afinn")
 
@@ -134,8 +134,7 @@ sidebarLayout(
    mainPanel(
      tabsetPanel(
        tabPanel("Time-Series Plot", plotOutput("timeseries")),
-       tabPanel("Aggregated Bar Plot", plotOutput("news_comp")),
-       tabPanel("Sentiment Table", tableOutput("sentiment"))
+       tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
      )
      )
  )
@@ -150,22 +149,12 @@ server <- function(input, output) {
     sentiment <- as.character(input$sentimentlexicon)
     score <- as.character(input$scoretype)
     
-    #df.name <- paste(input$searchterm, input$sentimentlexicon, input$scoretype, sep = ".")
     df.name <- paste(search, sentiment, score, sep = ".")
-    
+
     df <- tidy.news.dflist[[df.name]] 
-    
-    #df.name <- paste("police", "bing", "all", sep = ".")
-    #df <- tidy.news.dflist[[df.name]]
     
     return(df)
     
-    #new.df <- corpus_to_sentiments(corpus.list[[input$searchterm]], 
-    #                   rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
-    #  clean_sentiment() 
-    #%>%
-    #  dplyr::filter(source_name %in% input$sources) 
-    #return(new.df)
       
   })
     
@@ -192,13 +181,6 @@ server <- function(input, output) {
                        "median" = median(SentimentScore))) %>%
       ggplot(aes(x = Date, y = SentimentMeasure, color = as.factor(NewsSource))) + geom_line() 
   }) 
-  
-  output$sentiment <- renderTable({
-    Inputdata() %>%
-      group_by(NewsSource) %>%
-      summarize(n = n()) %>%
-      desc()
-  })
   
 }
 
