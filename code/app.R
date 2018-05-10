@@ -5,6 +5,9 @@ library(tidytext)
 library(tm) 
 library(lubridate)
 library(stringr)
+library(Cairo)
+options(shiny.usecairo=T)
+
 
 
 #load(file = "shiny_data/shiny_corpus_list1.Rdata")
@@ -129,13 +132,13 @@ sidebarLayout(
     selectInput(inputId = 'scoretype', label = "Score Type", multiple = FALSE, choices = score_choices),
     selectInput(inputId = 'sentimentmeasure', label = "Sentiment Measure", multiple = FALSE, choices = measure_choices),
     htmlOutput("selectUI"),
-    submitButton(text = "refresh")
+    submitButton(text = "refresh"), width = 2
                ),
    mainPanel(
      tabsetPanel(
-       tabPanel("Time-Series Plot", plotOutput("timeseries")),
-       tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
-     )
+       tabPanel("Time-Series Plot", plotOutput("timeseries", height = "800px")),
+       tabPanel("Aggregated Bar Plot", plotOutput("news_comp", height = "800px"))
+     ), width = 10, height = 5
      )
  )
 )
@@ -179,7 +182,9 @@ server <- function(input, output) {
       summarize(SentimentMeasure = switch(input$sentimentmeasure,
                        "mean" = mean(SentimentScore),
                        "median" = median(SentimentScore))) %>%
-      ggplot(aes(x = Date, y = SentimentMeasure, color = as.factor(NewsSource))) + geom_line() 
+      ggplot(aes(x = Date, y = SentimentMeasure, color = as.factor(NewsSource)))+
+        geom_line()+
+        guides(color=guide_legend("News Sources"))
   }) 
   
 }
