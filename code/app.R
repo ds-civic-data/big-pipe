@@ -5,11 +5,9 @@ library(tidytext)
 library(tm) 
 library(lubridate)
 
-corpus.list1 <- load(file = "shiny_data/shiny.corpus.list1.Rdata")
-corpus.list2 <- load(file = "shiny_data/shiny.corpus.list2.Rdata")
+load(file = "shiny_data/shiny_corpus_list1.Rdata")
+load(file = "shiny_data/shiny_corpus_list2.Rdata")
 corpus.list <- c(corpus.list1, corpus.list2)
-#data(mtcars)
-
 
 searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
 
@@ -122,15 +120,14 @@ sidebarLayout(
                 multiple = FALSE, choices = sentiment_choices),
     selectInput(inputId = 'scoretype', label = "Score Type", multiple = FALSE, choices = score_choices),
     selectInput(inputId = 'sentimentmeasure', label = "Sentiment Measure", multiple = FALSE, choices = measure_choices),
-    selectInput(inputId = 'cylinder', label = "cyl", multiple = FALSE, choices = unique(as.factor(mtcars$cyl))),
     htmlOutput("selectUI"),
     submitButton(text = "refresh")
                ),
    mainPanel(
      tabsetPanel(
        tabPanel("Time-Series Plot", plotOutput("timeseries")),
-       tabPanel("Aggregated Bar Plot", plotOutput("news_comp"))
-       #tabPanel("Sentiments Table", tableOutput("sentiment"))
+       tabPanel("Aggregated Bar Plot", plotOutput("news_comp")),
+       tabPanel("Sentiments Table", tableOutput("sentiment"))
      )
      )
  )
@@ -140,69 +137,43 @@ sidebarLayout(
 server <- function(input, output) {
   
   Inputdata <- reactive ({
-    
-    #mtcars %>%
-    #  filter(as.factor(cyl) == input$cylinder)
-    #c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
-    
-    #work.list <- switch(input$searchterm, 
-    #                    "congress" = corpus.list[["congress"]],
-    #                    "police" = corpus.list[["police"]],
-    #                    "metoo" = corpus.list[["metoo"]],
-    #                    "trump" = corpus.list[["trump"]],
-    #                    "russia" = corpus.list[["russia"]],
-    #                    "china" = corpus.list[["china"]],
-    #                    "schoolshooting" = corpus.list[["schoolshooting"]])
-    
-    #corpus.list[[input$searchterm]]
-    new.df <- corpus_to_sentiments(corpus.list[input$searchterm], 
+  
+    new.df <- corpus_to_sentiments(corpus.list[[input$searchterm]], 
                        rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
       clean_sentiment() %>%
-      filter(source_name %in% input$sources) 
+      dplyr::filter(source_name %in% input$sources) 
     return(new.df)
       
   })
     
   output$news_comp <- renderPlot({
     data.agg <- Inputdata()
-    #Inputdata() %>%
-      #data.agg <- Inputdata()
-      #data.agg <- corpus_to_sentiments(corpus.list[[input$searchterm]],
-      #                                 rubric = input$sentimentlexicon, scoreType = input$scoretype)
-      #data.agg <- clean_sentiment(data.agg)
-      #data.agg <- filter(data.agg, source_name %in% input$sources)
       
-      #data.agg %>%
-      #  ggplot(aes(x = mpg, y = hp))+geom_point()
-      
-      data.agg %>%
+    data.agg %>%
         group_by(NewsSource) %>%
         summarize(SentimentMeasure = switch(input$sentimentmeasure,
                                             "mean" = mean(SentimentScore),
                                             "median" = median(SentimentScore))) %>%
-      ggplot(aes(x = NewsSource, y = SentimentMeasure)) + geom_col() + coord_flip() + theme_classic()
+      ggplot(aes(x = NewsSource, y = SentimentMeasure)) + geom_col() + coord_flip() 
   })
   
   output$timeseries <- renderPlot({
     data.time <- Inputdata()
-    #Inputdata() %>%  
-    #data.time <- corpus_to_sentiments(corpus.list[[input$searchterm]],
-    #                                 rubric = input$sentimentlexicon, scoreType = input$scoretype)
-    #data.time <- clean_sentiment(data.agg)
-    #data.time <- filter(data.agg, source_name %in% input$sources)
+    
     data.time %>%
       group_by(NewsSource, Date) %>% 
       summarize(SentimentMeasure = switch(input$sentimentmeasure,
                        "mean" = mean(SentimentScore),
                        "median" = median(SentimentScore))) %>%
-      ggplot(aes(x = Date, y = SentimentMeasure, Color = NewsSource)) + geom_line() + theme_classic()
+      ggplot(aes(x = Date, y = SentimentMeasure, Shape = NewsSource)) + geom_line() 
   }) 
   
-  #output$sentiment <- renderTable({
-  #  data %>%
-  #    group_by(source) %>%
-  #    summarize(mean = mean(sentiment), median = median(sentiment), n = n(), max = max(sentiment))
-  #})
+  output$sentiment <- renderTable({
+    Inputdata() %>%
+      group_by(NewsSource) %>%
+      summarize(mean = mean(sentiment), median = median(sentiment), n = n()) %>%
+      desc()
+  })
   
 }
 
