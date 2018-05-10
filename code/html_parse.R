@@ -1,7 +1,7 @@
 library(tm) 
 library(stringr)
 
-library(mdsr)
+##library(mdsr)
 library(tidytext)
 
 # for use with sentiment analysis 
@@ -17,16 +17,16 @@ afinnSentiments <- get_sentiments(lexicon = "afinn")
 # reduced to only its metadata 
 split_extracted_data <- function(extracted_data) { 
   html_corpus <- c() # initialize character array 
-  for (i in 1:length(extracted_data)) { 
-    html_corpus[i] <- extracted_data[[i]][5] 
+  for (i in 1:10) { #length(extracted_data)) { 
+    html_corpus <- c(html_corpus, extracted_data[[i]][5]) 
     extracted_data[[i]] <- extracted_data[[i]][-5] # delete hefty html data from extracted data 
   } 
-  # convert to corpus and remove stop words 
+  
+  # convert to corpus 
   html_corpus <- Corpus(VectorSource(html_corpus)) 
   
-  # now return 2-list : (html_dat, extracted_data) 
-  l <- list(html_corpus, extracted_data) 
-  l 
+  L <- list(html_corpus, extracted_data) 
+  L 
 }
 
 # DESCRIPTION 
@@ -169,3 +169,7 @@ clean_sentiment <- function(sentiment.list){
   tidy.sent.df %>%
     mutate(Date = ymd(sub("T.*", "", Date)))
 }
+
+
+
+########################################################################################
