@@ -4,10 +4,13 @@ library(mdsr)
 library(tidytext)
 library(tm) 
 library(lubridate)
+library(stringr)
 
-load(file = "shiny_data/shiny_corpus_list1.Rdata")
-load(file = "shiny_data/shiny_corpus_list2.Rdata")
-corpus.list <- c(corpus.list1, corpus.list2)
+#load(file = "shiny_data/shiny_corpus_list1.Rdata")
+#load(file = "shiny_data/shiny_corpus_list2.Rdata")
+#corpus.list <- c(corpus.list1, corpus.list2)
+
+load(file = "shiny_data/tidy_news_dflist.Rdata")
 
 searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
 
@@ -127,7 +130,7 @@ sidebarLayout(
      tabsetPanel(
        tabPanel("Time-Series Plot", plotOutput("timeseries")),
        tabPanel("Aggregated Bar Plot", plotOutput("news_comp")),
-       tabPanel("Sentiments Table", tableOutput("sentiment"))
+       tabPanel("Sentiment Table", tableOutput("sentiment"))
      )
      )
  )
@@ -165,7 +168,7 @@ server <- function(input, output) {
       summarize(SentimentMeasure = switch(input$sentimentmeasure,
                        "mean" = mean(SentimentScore),
                        "median" = median(SentimentScore))) %>%
-      ggplot(aes(x = Date, y = SentimentMeasure, Shape = NewsSource)) + geom_line() 
+      ggplot(aes(x = Date, y = SentimentMeasure, color = as.factor(NewsSource))) + geom_line() 
   }) 
   
   output$sentiment <- renderTable({
