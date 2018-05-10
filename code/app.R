@@ -6,13 +6,21 @@ library(tm)
 library(lubridate)
 library(stringr)
 
+
 #load(file = "shiny_data/shiny_corpus_list1.Rdata")
 #load(file = "shiny_data/shiny_corpus_list2.Rdata")
 #corpus.list <- c(corpus.list1, corpus.list2)
 
 load(file = "shiny_data/tidy_news_dflist.Rdata")
 
-searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", "schoolshooting")
+load(file = "shiny_data/shiny_corpus_list1.Rdata")
+load(file = "shiny_data/shiny_corpus_list2.Rdata")
+load(file = "shiny_data/shiny_corpus_list3.Rdata")
+corpus.list <- c(corpus.list1, corpus.list2, corpus.list3)
+
+
+searchlist <- c("congress", "police", "metoo", "trump", "russia", "china", 
+                "schoolshooting", "israel", "racism", "bigmoney", "euro")
 
 news_id <- c("the-guardian-au", "the-guardian-uk", "politico", 
              "breitbart-news",  "fox-news", "national-review",
@@ -105,9 +113,6 @@ clean_sentiment <- function(sentiment.list){
 
 ##################################################################
 #### CORPUS TO SENTIMENT PIPELINE
-
-
-
 #################################################################
 
 
