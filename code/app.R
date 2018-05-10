@@ -146,18 +146,26 @@ server <- function(input, output) {
   
   Inputdata <- reactive ({
     
+    search <- as.character(input$searchterm)
+    sentiment <- as.character(input$sentimentlexicon)
+    score <- as.character(input$scoretype)
+    
     #df.name <- paste(input$searchterm, input$sentimentlexicon, input$scoretype, sep = ".")
+    df.name <- paste(search, sentiment, score, sep = ".")
     
-    df <- tidy.news.dflist[[paste(input$searchterm, input$sentimentlexicon, input$scoretype, sep = ".")]] 
+    df <- tidy.news.dflist[[df.name]] 
     
-    #return(df)
+    #df.name <- paste("police", "bing", "all", sep = ".")
+    #df <- tidy.news.dflist[[df.name]]
     
-    new.df <- corpus_to_sentiments(corpus.list[[input$searchterm]], 
-                       rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
-      clean_sentiment() 
+    return(df)
+    
+    #new.df <- corpus_to_sentiments(corpus.list[[input$searchterm]], 
+    #                   rubric = input$sentimentlexicon, scoreType = input$scoretype) %>%
+    #  clean_sentiment() 
     #%>%
     #  dplyr::filter(source_name %in% input$sources) 
-    return(new.df)
+    #return(new.df)
       
   })
     
